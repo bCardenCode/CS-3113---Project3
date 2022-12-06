@@ -8,7 +8,6 @@
 // Variables
 //-----------------------------
 char* memAvailable = "EMPTY";
-char* endOfList = "ENDOFLIST";
 char* algo = "FIRSTFIT";
 char* null = "NULL";
 
@@ -45,7 +44,6 @@ struct Chunk* Chunk_new(char* aString, int aSize) {
     return ptr;
 }
 
-
 //-----------------------------
 // ListNode (LinkedList) struct
 //-----------------------------
@@ -58,15 +56,7 @@ struct ListNode {
 struct ListNode* head;
 struct ListNode* tail;
 
-struct ListNode* ListNode_new(struct ListNode* previous, struct Chunk* data, struct ListNode* next) {
-    struct ListNode* ptr = malloc(sizeof (struct ListNode));
-    ptr->previous = previous;
-    ptr->data = data;
-    ptr->next = next;
-    return ptr;
-}
-
-struct ListNode* ListNode_newData(struct Chunk* data) {
+struct ListNode* ListNode_new(struct Chunk* data) {
     struct ListNode* ptr = malloc(sizeof (struct ListNode));
     ptr->previous = NULL;
     ptr->data = data;
@@ -117,7 +107,7 @@ void addEnd(struct ListNode* toAdd) {
 
 void addBefore(char* string, int size, struct ListNode* addedBefore) {
     struct Chunk* chunk = Chunk_new(string, size);
-    struct ListNode* node = ListNode_newData(chunk);
+    struct ListNode* node = ListNode_new(chunk);
 
     if(addedBefore == head) {
         addHead(node);
@@ -132,6 +122,12 @@ void addBefore(char* string, int size, struct ListNode* addedBefore) {
         addedBefore->data->size -= size;
         listLength++;
     }
+}
+
+void initializeList(int size) {
+    head = ListNode_new(Chunk_new(memAvailable, size));
+    tail = head;
+    listLength++;
 }
 
 //-----------------------------
@@ -166,7 +162,6 @@ void printList() {
         current = current->next;
     }
 }
-
 
 void printNode(struct ListNode* node) {
     if(node->previous != NULL) {
@@ -253,6 +248,54 @@ int find(char* string) {
         current = current->next;
     }
     return 0;
+}
+
+void compactMemory() {
+
+    if(listLength < 2) {
+        return;
+    }
+    struct ListNode* current = head;
+    for(int i = 0; i < listLength; i++) {
+
+        //if current is head
+        if(current == head) {
+            if(strcmp(current->data->string, current->next->data->string) == 0) {
+                current->data->size += current->next->data->size;
+                removeNode(current->next);
+            }
+
+        //if current is tail    
+        } else if(current == tail) {
+            if(strcmp(current->data->string, current->previous->data->string) == 0) {
+                current->previous->data->size += current->data->size;
+                removeTail();
+            }
+        } else {
+
+            //if next and previous are equal to current
+            if(strcmp(current->data->string, current->previous->data->string) == 0 && strcmp(current->data->string, current->next->data->string) == 0) {
+                current->previous->data->size += (current->data->size + current->next->data->size);
+                struct ListNode* temp = current;
+                current = current->previous;
+                removeNode(temp->next);
+                removeNode(temp);
+
+            //if ONLY previous and current are the same    
+            } else if(strcmp(current->data->string, current->previous->data->string) == 0) {
+                current->previous->data->size += current->data->size;
+                struct ListNode* temp = current;
+                current = current->previous;
+                removeNode(temp);
+
+            //if ONLY current and next are the same    
+            } else if(strcmp(current->data->string, current->next->data->string) == 0) {
+                current->data->size += current->next->data->size;
+                removeNode(current->next);
+            }
+        }
+        current = current->next;
+    }
 }
 
 void release(char* string) {
@@ -356,53 +399,9 @@ void release(char* string) {
 
     if(released) {
         printf("FREE %s %d %d\n", string, releasedLength, currentIndex);
+        compactMemory();
     } else {
         printf("FAIL RELEASE %s\n", string);
-    }
-}
-
-void compactMemory() {
-    struct ListNode* current = head;
-    for(int i = 0; i < listLength; i++) {
-
-        //if current is head
-        if(current == head) {
-            if(strcmp(current->data->string, current->next->data->string) == 0) {
-                current->data->size += current->next->data->size;
-                removeNode(current->next);
-            }
-
-        //if current is tail    
-        } else if(current == tail) {
-            if(strcmp(current->data->string, current->previous->data->string) == 0) {
-                current->previous->data->size += current->data->size;
-                removeTail();
-            }
-        } else {
-
-            //if next and previous are equal to current
-            if(strcmp(current->data->string, current->previous->data->string) == 0 && strcmp(current->data->string, current->next->data->string) == 0) {
-                current->previous->data->size += (current->data->size + current->next->data->size);
-                struct ListNode* temp = current;
-                current = current->previous;
-                removeNode(temp->next);
-                removeNode(temp);
-
-            //if ONLY previous and current are the same    
-            } else if(strcmp(current->data->string, current->previous->data->string) == 0) {
-                current->previous->data->size += current->data->size;
-                struct ListNode* temp = current;
-                current = current->previous;
-                removeNode(temp);
-
-            //if ONLY current and next are the same    
-            } else if(strcmp(current->data->string, current->next->data->string) == 0) {
-                current->data->size += current->next->data->size;
-                removeNode(current->next);
-            }
-            
-        }
-        current = current->next;
     }
 }
 
@@ -433,18 +432,22 @@ void requestFirstFit(char* string, int size) {
 int main(int argc, char** argv) {
 
     readInput(argc, argv);
+    //initializeList(space);
 
-    head = ListNode_new(NULL, Chunk_new(memAvailable,10), NULL);
-    listLength++;
-    tail = head;
-
-    struct Chunk* chunk2 = Chunk_new("2", 34);
-    struct Chunk* chunk3 = Chunk_new(memAvailable, 30);
-    struct Chunk* chunk4 = Chunk_new("4", 28);
-    struct ListNode* temp2 = ListNode_newData(chunk2);
-    struct ListNode* temp3 = ListNode_newData(chunk3);
-    struct ListNode* temp4 = ListNode_newData(chunk4);
     
+    struct Chunk* chunk1 = Chunk_new(memAvailable, 16);
+    struct Chunk* chunk2 = Chunk_new(memAvailable, 34);
+    struct Chunk* chunk3 = Chunk_new("C", 30);
+    struct Chunk* chunk4 = Chunk_new(memAvailable, 28);
+    struct ListNode* temp1 = ListNode_new(chunk1);
+    struct ListNode* temp2 = ListNode_new(chunk2);
+    struct ListNode* temp3 = ListNode_new(chunk3);
+    struct ListNode* temp4 = ListNode_new(chunk4);
+    
+    head = temp1;
+    tail = head;
+    listLength++;
+
     addEnd(temp2);
     addEnd(temp3);
     addEnd(temp4);
@@ -452,7 +455,6 @@ int main(int argc, char** argv) {
     printf("\n-----------------------\nMemory...\n");
     printMemory();
 
-    /*
     printf("\n-----------------------\nAssigned...\n");
     if(listAssigned() == 0) {
         printf("NONE ASSIGNED\n");
@@ -479,20 +481,19 @@ int main(int argc, char** argv) {
     printf("\n-----------------------\nCompacting...\n");
     compactMemory();
     printMemory();
-
-    char* toAdd = "3.5";
+    /*
+    char* toAdd1 = "3.5";
     char* after = "4";
-    printf("\n-----------------------\nAdding %s before %s...\n", toAdd, after);
-    addBefore(toAdd, 10, temp4);
+    printf("\n-----------------------\nAdding %s before %s...\n", toAdd1, after);
+    addBefore(toAdd1, 10, temp4);
     printMemory();
     */
 
-    char* toAdd = "NEW";
-    printf("\n--------------\nRequesting FIRSTFIT for %s...\n", toAdd);
-    requestFirstFit(toAdd, 100);
+    char* toAdd2 = "NEW";
+    printf("\n--------------\nRequesting FIRSTFIT for %s...\n", toAdd2);
+    requestFirstFit(toAdd2, 100);
     printMemory();
 
 
-
-
+   return 0;
 }
