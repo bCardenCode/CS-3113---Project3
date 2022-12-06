@@ -204,6 +204,7 @@ void readInput(int argc, char** argv) {
         quantum = strtol(argv[1], NULL, 10);
         processes = strtol(argv[2], NULL, 10); 
         space = strtol(argv[3], NULL, 10);
+        algo = argv[4];
         incompleteFiles = processes;
     }    
 }
