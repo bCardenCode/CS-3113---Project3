@@ -11,24 +11,36 @@ char* memAvailable = "EMPTY";
 char* algo = "FIRSTFIT";
 char* null = "NULL";
 
+char* comment = "#";
+char* request = "REQUEST";
+char* release_ = "RELEASE";
+char* list = "LIST";
+char* find_ = "FIND";
+
 int quantum;
 int processes;
 int space;
 int listLength = 0;
+int incompleteFiles;
+
+char* fileNames[8] = {"0.ins", "1.ins", "2.ins", "3.ins", "4.ins", "5.ins", "6.ins", "7.ins"};
 
 //-----------------------------
 // Structs
 //-----------------------------
-
-struct File {
+struct scriptFile {
     int lastExecuted;
     int completed;
+    FILE* filePtr;
+    int lastAllocFailed;
 };
 
-struct File* File_new() {
-    struct File* ptr = malloc(sizeof (struct File));
-    ptr->lastExecuted = 0;
-    ptr->completed = 0;
+struct scriptFile* scriptFile_new(char* fileName, int i) {
+    struct scriptFile* ptr = malloc(sizeof (struct scriptFile));
+    ptr->lastExecuted = -1;
+    ptr->completed = i;
+    ptr->filePtr = fopen(fileName, "r");
+    ptr->lastAllocFailed = 0;
     return ptr;
 }
 
@@ -42,6 +54,60 @@ struct Chunk* Chunk_new(char* aString, int aSize) {
     strcpy(ptr->string, aString);
     ptr->size = aSize;
     return ptr;
+}
+
+//-----------------------------
+// FileNode (Circular LinkedList)
+//-----------------------------
+struct FileNode {
+    struct FileNode* previous;
+    struct scriptFile* data;
+    struct FileNode* next;
+};
+
+struct FileNode* fileHead;
+struct FileNode* fileTail;
+
+struct FileNode* FileNode_new(struct scriptFile* data) {
+    struct FileNode* ptr = malloc(sizeof (struct FileNode));
+    ptr->previous = NULL;
+    ptr->data = data;
+    ptr->next = NULL;
+    return ptr;
+}
+
+void assignFilePtrs() {
+    fileHead = FileNode_new(scriptFile_new("sandbox.txt", 0 /*fileNames[0]*/));
+    fileHead->next = fileHead;
+    fileHead->previous = fileTail;
+    fileTail = fileHead;
+
+    for(int i = 1; i < processes; i++) {
+        fileTail->next = FileNode_new(scriptFile_new("sandbox.txt", i /*fileNames[i]*/));
+        fileTail->next->previous = fileTail;
+        fileTail = fileTail->next;
+        fileTail->next = fileHead;
+        fileHead->previous = fileTail;
+    }
+}
+
+void removeFile(struct FileNode* toRemove) {
+    if(toRemove == fileHead) {
+        fileHead = fileHead->next;
+        fileTail->next = fileHead;
+        free(toRemove);
+    } else if(toRemove == fileTail) {
+        fileTail->previous->next = fileHead;
+        struct FileNode* temp = fileTail;
+        fileTail = fileTail->previous;
+        free(temp);
+        fileHead->previous = fileTail;
+    } else {
+        toRemove->previous->next = toRemove->next;
+        toRemove->next->previous = toRemove->previous;
+        //free(toRemove);
+    }
+    incompleteFiles--;
 }
 
 //-----------------------------
@@ -85,7 +151,7 @@ void removeNode(struct ListNode* this) {
     } else {
         this->previous->next = this->next;
         this->next->previous = this->previous;
-        free(this);
+        //free(this);
         listLength--;
     }
 }
@@ -138,6 +204,7 @@ void readInput(int argc, char** argv) {
         quantum = strtol(argv[1], NULL, 10);
         processes = strtol(argv[2], NULL, 10); 
         space = strtol(argv[3], NULL, 10);
+        incompleteFiles = processes;
     }    
 }
 
@@ -172,6 +239,20 @@ void printNode(struct ListNode* node) {
     printf("DATA: %s, ", node->data->string);
     if(node->next != NULL) {
         printf("NEXT: %s\n", node->next->data->string);
+    } else {
+        printf("NEXT: NULL\n");
+    }
+}
+
+void printFileNode(struct FileNode* node) {
+    if(node->previous != NULL) {
+        printf("PREVIOUS: %d, ", node->previous->data->completed);
+    } else {
+        printf("PREVIOUS: NULL, ");
+    }
+    printf("DATA: %d, ", node->data->completed);
+    if(node->next != NULL) {
+        printf("NEXT: %d\n", node->next->data->completed);
     } else {
         printf("NEXT: NULL\n");
     }
@@ -252,9 +333,11 @@ int find(char* string) {
 
 void compactMemory() {
 
+    //Edge case
     if(listLength < 2) {
         return;
     }
+
     struct ListNode* current = head;
     for(int i = 0; i < listLength; i++) {
 
@@ -397,6 +480,7 @@ void release(char* string) {
         current = current->next;
     }
 
+    //Determines printed output
     if(released) {
         printf("FREE %s %d %d\n", string, releasedLength, currentIndex);
         compactMemory();
@@ -405,7 +489,7 @@ void release(char* string) {
     }
 }
 
-void requestFirstFit(char* string, int size) {
+int requestFirstFit(char* string, int size) {
     int success = 0;
     int currentIndex = 0;
 
@@ -419,11 +503,14 @@ void requestFirstFit(char* string, int size) {
         currentIndex += current->data->size;
         current = current->next;
     }
+
     if(success) {
         printf("ALLOCATED %s %d\n", string, currentIndex);
     } else {
         printf("FAIL REQUEST %s %d\n", string, size);
     }
+
+    return success;
 }
 
 //-----------------------------
@@ -432,67 +519,87 @@ void requestFirstFit(char* string, int size) {
 int main(int argc, char** argv) {
 
     readInput(argc, argv);
-    //initializeList(space);
+    initializeList(space);
+    assignFilePtrs();
 
-    
-    struct Chunk* chunk1 = Chunk_new(memAvailable, 16);
-    struct Chunk* chunk2 = Chunk_new(memAvailable, 34);
-    struct Chunk* chunk3 = Chunk_new("C", 30);
-    struct Chunk* chunk4 = Chunk_new(memAvailable, 28);
-    struct ListNode* temp1 = ListNode_new(chunk1);
-    struct ListNode* temp2 = ListNode_new(chunk2);
-    struct ListNode* temp3 = ListNode_new(chunk3);
-    struct ListNode* temp4 = ListNode_new(chunk4);
-    
-    head = temp1;
-    tail = head;
-    listLength++;
+    char func[100];
+    char name[100];
+    int size;
 
-    addEnd(temp2);
-    addEnd(temp3);
-    addEnd(temp4);
-    
-    printf("\n-----------------------\nMemory...\n");
-    printMemory();
+    struct FileNode* currentFile = fileHead;
+    while(incompleteFiles > 0){
+        int instrsRun = 0;
+        while(instrsRun < quantum) {
 
-    printf("\n-----------------------\nAssigned...\n");
-    if(listAssigned() == 0) {
-        printf("NONE ASSIGNED\n");
+            //Gets back to last executed line
+            for(int i = 0; i < currentFile->data->lastExecuted; i++) {
+                fscanf(currentFile->data->filePtr, "%*[^\n]\n");
+            }
+
+            if(fscanf(currentFile->data->filePtr, "%s", func) == EOF) {
+                currentFile->data->completed = 1;
+                removeFile(currentFile);
+                break;
+            }
+                 
+            //Comment
+            else if(strcmp(func, comment) == 0) {
+                //Skips current line
+                fscanf(currentFile->data->filePtr, "%*[^\n]\n");
+
+            //Find
+            } else if(strcmp(func, find_) == 0) {
+                fscanf(currentFile->data->filePtr, "%s", name);
+                find(name);
+                instrsRun++;
+                currentFile->data->lastExecuted++;
+
+            //Request
+            } else if(strcmp(func, request) == 0) {
+                fscanf(currentFile->data->filePtr, "%s %d", name, &size);
+
+                //If can't allocate...
+                if(requestFirstFit(name, size) == 0) {
+
+                    //Deadlock
+                    if(currentFile->data->lastAllocFailed == 1){
+                        printf("DEADLOCK DETECTED\n");
+                        return 0;
+                    }
+                    currentFile->data->lastAllocFailed = 1;
+                    break;
+                } else {
+                    instrsRun++;
+                    currentFile->data->lastExecuted++;
+                }
+            //Release
+            } else if(strcmp(func, release_) == 0) {
+                fscanf(currentFile->data->filePtr, "%s", name);
+                release(name);
+                instrsRun++;
+                currentFile->data->lastExecuted++;
+
+            //List
+            } else if(strcmp(func, list) == 0) {
+                fscanf(currentFile->data->filePtr, "%s", name);
+                if(strcmp(name, "AVAILABLE") == 0 ) {
+                    if(!listAvailable()) {
+                        printf("FULL\n");
+                    }     
+                } else if(strcmp(name, "ASSIGNED") == 0) {
+                    if(!listAssigned()) {
+                        printf("NONE\n");
+                    }
+                }
+                instrsRun++;
+                currentFile->data->lastExecuted++;
+            }
+        }
+
+        if(instrsRun > 0) {
+            currentFile = currentFile->next;
+        }
     }
 
-    printf("\n-----------------------\nAvailable...\n");
-    if(listAvailable() == 0) {
-        printf("ALL FULL\n");
-    }
-
-    char* str = "THAT";
-    printf("\n-----------------------\nFinding %s...\n", str);
-    if(find(str) == 0) {
-        printf("\"%s\" NOT FOUND\n", str);
-    }
-
-    char* toRemove = "C";
-    printf("\n-----------------------\nReleasing %s...\n", toRemove);
-    release(toRemove);
-
-    printf("\n");
-    printMemory();
-
-    printf("\n-----------------------\nCompacting...\n");
-    compactMemory();
-    printMemory();
-    
-    char* toAdd1 = "3.5";
-    char* after = "4";
-    printf("\n-----------------------\nAdding %s before %s...\n", toAdd1, after);
-    addBefore(toAdd1, 10, temp4);
-    printMemory();
-
-    char* toAdd2 = "NEW";
-    printf("\n--------------\nRequesting FIRSTFIT for %s...\n", toAdd2);
-    requestFirstFit(toAdd2, 100);
-    printMemory();
-
-
-   return 0;
+    return 0;
 }
