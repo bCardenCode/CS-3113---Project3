@@ -481,13 +481,12 @@ int main(int argc, char** argv) {
     printf("\n-----------------------\nCompacting...\n");
     compactMemory();
     printMemory();
-    /*
+    
     char* toAdd1 = "3.5";
     char* after = "4";
     printf("\n-----------------------\nAdding %s before %s...\n", toAdd1, after);
     addBefore(toAdd1, 10, temp4);
     printMemory();
-    */
 
     char* toAdd2 = "NEW";
     printf("\n--------------\nRequesting FIRSTFIT for %s...\n", toAdd2);
