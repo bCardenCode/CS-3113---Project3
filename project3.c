@@ -35,7 +35,7 @@ struct scriptFile {
     int lastAllocFailed;
 };
 
-struct scriptFile* scriptFile_new(char* fileName, int i) {
+struct scriptFile* scriptFile_new(char* fileName) {
     struct scriptFile* ptr = malloc(sizeof (struct scriptFile));
     ptr->lastExecuted = -1;
     ptr->completed = i;
@@ -77,13 +77,13 @@ struct FileNode* FileNode_new(struct scriptFile* data) {
 }
 
 void assignFilePtrs() {
-    fileHead = FileNode_new(scriptFile_new("sandbox.txt", 0 /*fileNames[0]*/));
+    fileHead = FileNode_new(scriptFile_new(fileNames[0]));
     fileHead->next = fileHead;
     fileHead->previous = fileTail;
     fileTail = fileHead;
 
     for(int i = 1; i < processes; i++) {
-        fileTail->next = FileNode_new(scriptFile_new("sandbox.txt", i /*fileNames[i]*/));
+        fileTail->next = FileNode_new(scriptFile_new(fileNames[i]));
         fileTail->next->previous = fileTail;
         fileTail = fileTail->next;
         fileTail->next = fileHead;
@@ -523,7 +523,7 @@ int main(int argc, char** argv) {
     initializeList(space);
     assignFilePtrs();
 
-    printMemory();
+    //printMemory();
 
     char func[100];
     char name[100];
