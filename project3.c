@@ -523,6 +523,8 @@ int main(int argc, char** argv) {
     initializeList(space);
     assignFilePtrs();
 
+    printMemory();
+
     char func[100];
     char name[100];
     int size;
