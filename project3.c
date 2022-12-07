@@ -33,18 +33,18 @@ struct scriptFile {
     int completed;
     FILE* filePtr;
     int lastAllocFailed;
-    char* lastAllocFailedName;
-    int lastAllocFailedSize;
+    //char* lastAllocFailedName;
+    //int lastAllocFailedSize;
 };
 
 struct scriptFile* scriptFile_new(char* fileName) {
     struct scriptFile* ptr = malloc(sizeof (struct scriptFile));
-    ptr->lastExecuted = -3;
+    ptr->lastExecuted = -2;
     ptr->completed = 0;
     ptr->filePtr = fopen(fileName, "r");
     ptr->lastAllocFailed = 0;
-    strcpy(ptr->lastAllocFailedName, memAvailable);
-    ptr->lastAllocFailedSize = 0;
+    //strcpy(ptr->lastAllocFailedName, memAvailable);
+    //ptr->lastAllocFailedSize = 0;
     return ptr;
 }
 
