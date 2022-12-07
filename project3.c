@@ -33,6 +33,7 @@ struct scriptFile {
     int completed;
     FILE* filePtr;
     int lastAllocFailed;
+    char* lastAllocFailedName;
 };
 
 struct scriptFile* scriptFile_new(char* fileName) {
@@ -41,6 +42,7 @@ struct scriptFile* scriptFile_new(char* fileName) {
     ptr->completed = 0;
     ptr->filePtr = fopen(fileName, "r");
     ptr->lastAllocFailed = 0;
+    ptr->lastAllocFailedName = memAvailable;
     return ptr;
 }
 
@@ -585,14 +587,16 @@ int main(int argc, char** argv) {
                 if(requestFirstFit(name, size) == 0) {
 
                     //Deadlock
-                    if(currentFile->data->lastAllocFailed == 1){
+                    if(currentFile->data->lastAllocFailed == 1 && strcmp(currentFile->data->lastAllocFailedName, name) == 0) {
                         printf("DEADLOCK DETECTED\n");
                         return 0;
                     }
                     currentFile->data->lastAllocFailed = 1;
+                    strcpy(currentFile->data->lastAllocFailedName, name);
                     break;
                 } else {
                     currentFile->data->lastAllocFailed = 0;
+                    strcpy(currentFile->data->lastAllocFailedName, name);
                     instrsRun++;
                     currentFile->data->lastExecuted++;
                 }
