@@ -598,6 +598,7 @@ int main(int argc, char** argv) {
                         return 0;
                     }
                     currentFile->data->lastAllocFailed = 1;
+                    break;
                 } else {
                     currentFile->data->lastAllocFailed = 0;
                     currentFile->data->lastAllocFailedName = memAvailable;
