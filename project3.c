@@ -586,6 +586,7 @@ int main(int argc, char** argv) {
                 //If can't allocate...
                 if(requestFirstFit(name, size) == 0) {
                     printf("%s here", name);
+                    instrsRun--;
 
                     //Deadlock
                     if(currentFile->data->lastAllocFailed == 1) {
@@ -596,7 +597,7 @@ int main(int argc, char** argv) {
                     break;
                 } else {
                     currentFile->data->lastAllocFailed = 0;
-                    //instrsRun++;
+                    instrsRun++;
                     currentFile->data->lastExecuted++;
                 }
             //Release
