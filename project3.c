@@ -549,11 +549,15 @@ int main(int argc, char** argv) {
         int instrsRun = 0;
         while(instrsRun < quantum) {
 
+            printf("here1\n");
             if(currentFile->data->lastAllocFailed == 1) {
+                printf("here2\n");
                 if(requestFirstFit(currentFile->data->lastAllocFailedName, currentFile->data->lastAllocFailedSize) == 0) {
+                    printf("here3\n");
                     printf("DEADLOCK DETECTED\n");
                     return 0;
                 } else {
+                    printf("here4\n");
                     instrsRun++;
                     //currentFile->data->lastExecuted++;
                 }
