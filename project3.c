@@ -531,6 +531,7 @@ int main(int argc, char** argv) {
     int size;
 
     struct FileNode* currentFile = fileHead;
+    //struct FileNode* currentFile = FileNode_new(scriptFile_new("sandbox.txt"));
     while(incompleteFiles > 0){
         int instrsRun = 0;
         while(instrsRun < quantum) {
@@ -543,7 +544,6 @@ int main(int argc, char** argv) {
             if(fscanf(currentFile->data->filePtr, "%s", func) == EOF) {
                 currentFile->data->completed = 1;
                 removeFile(currentFile);
-                instrsRun++;
                 break;
             }
                  
@@ -551,6 +551,7 @@ int main(int argc, char** argv) {
             else if(strcmp(func, comment) == 0) {
                 //Skips current line
                 fscanf(currentFile->data->filePtr, "%*[^\n]\n");
+                currentFile->data->lastExecuted++;
 
             //Find
             } else if(strcmp(func, find_) == 0) {
