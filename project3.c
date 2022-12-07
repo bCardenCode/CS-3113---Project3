@@ -39,7 +39,7 @@ struct scriptFile {
 
 struct scriptFile* scriptFile_new(char* fileName) {
     struct scriptFile* ptr = malloc(sizeof (struct scriptFile));
-    ptr->lastExecuted = 0;
+    ptr->lastExecuted = -3;
     ptr->completed = 0;
     ptr->filePtr = fopen(fileName, "r");
     ptr->lastAllocFailed = 0;
