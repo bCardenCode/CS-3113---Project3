@@ -557,7 +557,7 @@ int main(int argc, char** argv) {
                     instrsRun++;
                     //currentFile->data->lastExecuted++;
                 }
-            } else {
+            } 
 
            /*
             //Gets back to last executed line
@@ -634,7 +634,6 @@ int main(int argc, char** argv) {
                 }
                 instrsRun++;
                 //currentFile->data->lastExecuted++;
-            }
             }
 
         }
