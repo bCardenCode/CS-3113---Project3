@@ -29,22 +29,22 @@ char* fileNames[8] = {"0.ins", "1.ins", "2.ins", "3.ins", "4.ins", "5.ins", "6.i
 // Structs
 //-----------------------------
 struct scriptFile {
-    int lastExecuted;
+    //int lastExecuted;
     int completed;
     FILE* filePtr;
     int lastAllocFailed;
-    //char* lastAllocFailedName;
-    //int lastAllocFailedSize;
+    char* lastAllocFailedName;
+    int lastAllocFailedSize;
 };
 
 struct scriptFile* scriptFile_new(char* fileName) {
     struct scriptFile* ptr = malloc(sizeof (struct scriptFile));
-    ptr->lastExecuted = 0;
+    //ptr->lastExecuted = 0;
     ptr->completed = 0;
     ptr->filePtr = fopen(fileName, "r");
     ptr->lastAllocFailed = 0;
-    //strcpy(ptr->lastAllocFailedName, memAvailable);
-    //ptr->lastAllocFailedSize = 0;
+    strcpy(ptr->lastAllocFailedName, memAvailable);
+    ptr->lastAllocFailedSize = 0;
     return ptr;
 }
 
@@ -549,17 +549,15 @@ int main(int argc, char** argv) {
         int instrsRun = 0;
         while(instrsRun < quantum) {
 
-            /*
             if(currentFile->data->lastAllocFailed == 1) {
                 if(requestFirstFit(name, size) == 0) {
                     printf("DEADLOCK DETECTED\n");
                     return 0;
                 } else {
                     instrsRun++;
-                    currentFile->data->lastExecuted++;
+                    //currentFile->data->lastExecuted++;
                 }
-            }
-            */
+            } else {
 
            /*
             //Gets back to last executed line
@@ -586,7 +584,7 @@ int main(int argc, char** argv) {
                 fscanf(currentFile->data->filePtr, "%s", name);
                 find(name);
                 instrsRun++;
-                currentFile->data->lastExecuted++;
+                //currentFile->data->lastExecuted++;
 
             //Request
             } else if(strcmp(func, request) == 0) {
@@ -606,15 +604,15 @@ int main(int argc, char** argv) {
                         return 0;
                     }
                     currentFile->data->lastAllocFailed = 1;
-                    //strcpy(currentFile->data->lastAllocFailedName, name);
-                    //currentFile->data->lastAllocFailedSize = size;
+                    strcpy(currentFile->data->lastAllocFailedName, name);
+                    currentFile->data->lastAllocFailedSize = size;
                     break;
                 } else {
                     currentFile->data->lastAllocFailed = 0;
-                    //strcpy(currentFile->data->lastAllocFailedName, memAvailable);
-                    //currentFile->data->lastAllocFailedSize = 0;
+                    strcpy(currentFile->data->lastAllocFailedName, memAvailable);
+                    currentFile->data->lastAllocFailedSize = 0;
                     instrsRun++;
-                    currentFile->data->lastExecuted++;
+                    //currentFile->data->lastExecuted++;
                 }
 
             //Release
@@ -622,7 +620,7 @@ int main(int argc, char** argv) {
                 fscanf(currentFile->data->filePtr, "%s", name);
                 release(name);
                 instrsRun++;
-                currentFile->data->lastExecuted++;
+                //currentFile->data->lastExecuted++;
 
             //List
             } else if(strcmp(func, list) == 0) {
@@ -635,8 +633,10 @@ int main(int argc, char** argv) {
                     }
                 }
                 instrsRun++;
-                currentFile->data->lastExecuted++;
+                //currentFile->data->lastExecuted++;
             }
+            }
+
         }
         currentFile = currentFile->next;
     }
