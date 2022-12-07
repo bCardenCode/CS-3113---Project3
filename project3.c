@@ -606,7 +606,7 @@ int main(int argc, char** argv) {
                     break;
                 } else {
                     currentFile->data->lastAllocFailed = 0;
-                    currentFile->data->lastAllocFailedName = memAvailable;
+                    strcpy(currentFile->data->lastAllocFailedName, memAvailable);
                     currentFile->data->lastAllocFailedSize = 0;
                     instrsRun++;
                     currentFile->data->lastExecuted++;
