@@ -545,9 +545,10 @@ int main(int argc, char** argv) {
 
     struct FileNode* currentFile = fileHead;
     //struct FileNode* currentFile = FileNode_new(scriptFile_new("sandbox.txt"));
-    while(incompleteFiles > 0){
+    while(incompleteFiles > 0) {
         int instrsRun = 0;
         while(instrsRun < quantum) {
+
             /*
             if(currentFile->data->lastAllocFailed == 1) {
                 if(requestFirstFit(name, size) == 0) {
@@ -560,10 +561,12 @@ int main(int argc, char** argv) {
             }
             */
 
+           /*
             //Gets back to last executed line
             for(int i = 0; i < currentFile->data->lastExecuted; i++) {
                 fscanf(currentFile->data->filePtr, "%*[^\n]\n");
             }
+            */
 
             if(fscanf(currentFile->data->filePtr, "%s", func) == EOF) {
                 //printf("here");
