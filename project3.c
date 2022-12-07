@@ -615,12 +615,14 @@ int main(int argc, char** argv) {
                     }
                     currentFile->data->lastAllocFailed = 1;
                     //strcpy(currentFile->data->lastAllocFailedName, name);
-                    //currentFile->data->lastAllocFailedSize = size;
+                    currentFile->data->lastAllocFailedName = memAvailable;
+                    currentFile->data->lastAllocFailedSize = size;
                     break;
                 } else {
                     currentFile->data->lastAllocFailed = 0;
                     //strcpy(currentFile->data->lastAllocFailedName, memAvailable);
-                    //currentFile->data->lastAllocFailedSize = 0;
+                    currentFile->data->lastAllocFailedName = memAvailable;
+                    currentFile->data->lastAllocFailedSize = 0;
                     instrsRun++;
                     //currentFile->data->lastExecuted++;
                 }
