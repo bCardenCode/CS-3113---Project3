@@ -304,11 +304,11 @@ int listAssigned() {
     for(int i = 0; i < listLength; i++) {
         if(strcmp(memAvailable, current->data->string) != 0) {
             if(firstPrint) {
-                printf("(%s, %d, %d)", current->data->string, currentIndex, current->data->size);
+                printf("(%s, %d, %d)", current->data->string, current->data->size,  currentIndex);
                 firstPrint = 0;
                 ret = 1;
             } else {
-                printf(" (%s, %d, %d)", current->data->string, currentIndex, current->data->size);
+                printf(" (%s, %d, %d)", current->data->string, current->data->size,  currentIndex);
                 ret = 1;
             }
         }
