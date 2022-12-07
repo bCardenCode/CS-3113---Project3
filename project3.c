@@ -338,56 +338,6 @@ int find(char* string) {
     return 0;
 }
 
-void compactMemory() {
-
-    //Edge case
-    if(listLength < 2) {
-        return;
-    }
-
-    struct ListNode* current = head;
-    for(int i = 0; i < listLength; i++) {
-
-        //if current is head
-        if(current == head && strcmp(current->data->string, memAvailable) == 0) {
-            if(strcmp(current->data->string, current->next->data->string) == 0) {
-                current->data->size += current->next->data->size;
-                removeNode(current->next);
-            }
-
-        //if current is tail    
-        } else if(current == tail && strcmp(current->data->string, memAvailable) == strcmp(current->data->string, memAvailable) == 0) {
-            if(strcmp(current->data->string, current->previous->data->string) == 0) {
-                current->previous->data->size += current->data->size;
-                removeTail();
-            }
-        } else if(strcmp(current->data->string, memAvailable) == 0) {
-
-            //if next and previous are equal to current
-            if(strcmp(current->data->string, current->previous->data->string) == 0 && strcmp(current->data->string, current->next->data->string) == 0) {
-                current->previous->data->size += (current->data->size + current->next->data->size);
-                struct ListNode* temp = current;
-                current = current->previous;
-                removeNode(temp->next);
-                removeNode(temp);
-
-            //if ONLY previous and current are the same    
-            } else if(strcmp(current->data->string, current->previous->data->string) == 0) {
-                current->previous->data->size += current->data->size;
-                struct ListNode* temp = current;
-                current = current->previous;
-                removeNode(temp);
-
-            //if ONLY current and next are the same    
-            } else if(strcmp(current->data->string, current->next->data->string) == 0) {
-                current->data->size += current->next->data->size;
-                removeNode(current->next);
-            }
-        }
-        current = current->next;
-    }
-}
-
 void release(char* string) {
     int released = 0;
     int releasedLength = 0;
@@ -541,6 +491,7 @@ int main(int argc, char** argv) {
         int instrsRun = 0;
         while(instrsRun < quantum) {
             
+            //Handles deadlock check -> Requests again if failed previously
             if(currentFile->data->lastAllocFailed == 1) {
                 if(requestFirstFit(currentFile->data->lastAllocFailedName, currentFile->data->lastAllocFailedSize) == 0) {
                     printf("DEADLOCK DETECTED\n");
@@ -550,6 +501,7 @@ int main(int argc, char** argv) {
                 }
             } 
 
+            //EOF
             if(fscanf(currentFile->data->filePtr, "%s", func) == EOF) {
                 currentFile->data->completed = 1;
                 removeFile(currentFile);
@@ -585,14 +537,15 @@ int main(int argc, char** argv) {
                         printf("DEADLOCK DETECTED\n");
                         return 0;
                     }
-
+                    
+                    /*
                     //Deadlock case
                     if(currentFile->data->lastAllocFailed == 1) {
                         printf("DEADLOCK DETECTED\n");
                         return 0;
                     }
+                    */
                      currentFile->data->lastAllocFailed = 1;
-                    
                     break;
                 } else {
                     currentFile->data->lastAllocFailed = 0;
