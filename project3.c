@@ -547,7 +547,7 @@ int main(int argc, char** argv) {
     requestFirstFit("C", 192);
     listAvailable();
     */
-   
+
     struct FileNode* currentFile = fileHead;
     //struct FileNode* currentFile = FileNode_new(scriptFile_new("sandbox.txt"));
     while(incompleteFiles > 0){
@@ -560,7 +560,7 @@ int main(int argc, char** argv) {
             }
 
             if(fscanf(currentFile->data->filePtr, "%s", func) == EOF) {
-                printf("here");
+                //printf("here");
                 currentFile->data->completed = 1;
                 removeFile(currentFile);
                 instrsRun++;
