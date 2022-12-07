@@ -596,7 +596,7 @@ int main(int argc, char** argv) {
                     break;
                 } else {
                     currentFile->data->lastAllocFailed = 0;
-                    instrsRun++;
+                    //instrsRun++;
                     currentFile->data->lastExecuted++;
                 }
             //Release
