@@ -587,7 +587,7 @@ int main(int argc, char** argv) {
                 //If can't allocate...
                 if(requestFirstFit(name, size) == 0) {
                     //printf("%s here", name);
-                    currentFile->data->lastExecuted--;
+                    //currentFile->data->lastExecuted--;
 
                     //Deadlock
                     if(currentFile->data->lastAllocFailed == 1) {
@@ -601,6 +601,8 @@ int main(int argc, char** argv) {
                     instrsRun++;
                     currentFile->data->lastExecuted++;
                 }
+                printf(" %d", currentFile->data->lastExecuted);
+
             //Release
             } else if(strcmp(func, release_) == 0) {
                 fscanf(currentFile->data->filePtr, "%s", name);
