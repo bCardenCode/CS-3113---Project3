@@ -544,6 +544,7 @@ int main(int argc, char** argv) {
             if(fscanf(currentFile->data->filePtr, "%s", func) == EOF) {
                 currentFile->data->completed = 1;
                 removeFile(currentFile);
+                instrsRun++
                 break;
             }
                  
