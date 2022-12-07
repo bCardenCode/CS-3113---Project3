@@ -602,7 +602,6 @@ int main(int argc, char** argv) {
                 if(requestFirstFit(name, size) == 0) {
                     currentFile->data->lastAllocFailedName = name;
                     currentFile->data->lastAllocFailedSize = size;
-                    currentFile->data->lastAllocFailed = 1;
 
                     //Single thread case
                     if(processes == 1) {
@@ -616,6 +615,7 @@ int main(int argc, char** argv) {
                         printf("DEADLOCK DETECTED\n");
                         return 0;
                     }
+                     currentFile->data->lastAllocFailed = 1;
                     
                     //strcpy(currentFile->data->lastAllocFailedName, name);
                     //char* temp = currentFile->data->lastAllocFailedName;
