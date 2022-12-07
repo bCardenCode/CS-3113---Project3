@@ -289,7 +289,9 @@ int listAvailable() {
         currentIndex += current->data->size;
         current = current->next;
     }
-
+    if(ret == 0) {
+        printf("FULL\n");
+    }
     if(!firstPrint) {
         printf("\n");
     }
@@ -586,9 +588,7 @@ int main(int argc, char** argv) {
             } else if(strcmp(func, list) == 0) {
                 fscanf(currentFile->data->filePtr, "%s", name);
                 if(strcmp(name, "AVAILABLE") == 0 ) {
-                    if(!listAvailable()) {
-                        printf("FULL\n");
-                    }     
+                    listAvailable(); 
                 } else if(strcmp(name, "ASSIGNED") == 0) {
                     if(!listAssigned()) {
                         printf("NONE\n");
