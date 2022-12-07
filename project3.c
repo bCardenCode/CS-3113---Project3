@@ -613,7 +613,9 @@ int main(int argc, char** argv) {
                     }
                     currentFile->data->lastAllocFailed = 1;
                     //strcpy(currentFile->data->lastAllocFailedName, name);
-                    currentFile->data->lastAllocFailedName = memAvailable;
+                    //char* temp = currentFile->data->lastAllocFailedName;
+                    //free(temp);
+                    currentFile->data->lastAllocFailedName = name;
                     currentFile->data->lastAllocFailedSize = size;
                     break;
                 } else {
