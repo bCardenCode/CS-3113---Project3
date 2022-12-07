@@ -34,6 +34,7 @@ struct scriptFile {
     FILE* filePtr;
     int lastAllocFailed;
     char* lastAllocFailedName;
+    int lastAllocFailedSize;
 };
 
 struct scriptFile* scriptFile_new(char* fileName) {
@@ -42,7 +43,8 @@ struct scriptFile* scriptFile_new(char* fileName) {
     ptr->completed = 0;
     ptr->filePtr = fopen(fileName, "r");
     ptr->lastAllocFailed = 0;
-    ptr->lastAllocFailedName = memAvailable;
+    ptr->lastAllocFailedName = NULL;
+    ptr->lastAllocFailedSize = 0;
     return ptr;
 }
 
@@ -546,6 +548,9 @@ int main(int argc, char** argv) {
     while(incompleteFiles > 0){
         int instrsRun = 0;
         while(instrsRun < quantum) {
+            if(currentFile->data->lastAllocFailedSize > 0) {
+                
+            }
 
             //Gets back to last executed line
             for(int i = 0; i < currentFile->data->lastExecuted; i++) {
@@ -582,6 +587,8 @@ int main(int argc, char** argv) {
                         requestFirstFit(name, size);
                         printf("DEADLOCK DETECTED\n");
                     }
+                    currentFile->data->lastAllocFailedName = name;
+                    currentFile->data->lastAllocFailedSize = size;
 
                     //Deadlock
                     if(currentFile->data->lastAllocFailed == 1) {
@@ -592,6 +599,8 @@ int main(int argc, char** argv) {
                     break;
                 } else {
                     currentFile->data->lastAllocFailed = 0;
+                    currentFile->data->lastAllocFailedName = NULL;
+                    currentFile->data->lastAllocFailedSize = 0;
                     instrsRun++;
                     currentFile->data->lastExecuted++;
                 }
