@@ -38,7 +38,7 @@ struct scriptFile {
 
 struct scriptFile* scriptFile_new(char* fileName) {
     struct scriptFile* ptr = malloc(sizeof (struct scriptFile));
-    ptr->lastExecuted = -1;
+    ptr->lastExecuted = 0;
     ptr->completed = 0;
     ptr->filePtr = fopen(fileName, "r");
     ptr->lastAllocFailed = 0;
@@ -601,7 +601,7 @@ int main(int argc, char** argv) {
                     instrsRun++;
                     currentFile->data->lastExecuted++;
                 }
-                printf(" %d", currentFile->data->lastExecuted);
+                //printf(" %d", currentFile->data->lastExecuted);
 
             //Release
             } else if(strcmp(func, release_) == 0) {
