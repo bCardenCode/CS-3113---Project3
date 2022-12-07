@@ -527,25 +527,21 @@ int main(int argc, char** argv) {
 
                 //If can't allocate...
                 if(requestFirstFit(name, size) == 0) {
-                    currentFile->data->lastAllocFailedName = "A";
+                    //currentFile->data->lastAllocFailedName = "A";
+                    char* temp = currentFile->data->lastAllocFailedName;
+                    free(temp);
+                    currentFile->data->lastAllocFailedName = name;
                     //strcpy(currentFile->data->lastAllocFailedName, name);
                     currentFile->data->lastAllocFailedSize = size;
 
-                    //Single thread case
+                    //Single thread deadlock case
                     if(processes == 1) {
                         requestFirstFit(name, size);
                         printf("DEADLOCK DETECTED\n");
                         return 0;
                     }
                     
-                    /*
-                    //Deadlock case
-                    if(currentFile->data->lastAllocFailed == 1) {
-                        printf("DEADLOCK DETECTED\n");
-                        return 0;
-                    }
-                    */
-                     currentFile->data->lastAllocFailed = 1;
+                    currentFile->data->lastAllocFailed = 1;
                     break;
                 } else {
                     currentFile->data->lastAllocFailed = 0;
