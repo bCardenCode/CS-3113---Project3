@@ -587,16 +587,16 @@ int main(int argc, char** argv) {
                 if(requestFirstFit(name, size) == 0) {
 
                     //Deadlock
-                    if(currentFile->data->lastAllocFailed == 1 && strcmp(currentFile->data->lastAllocFailedName, name) == 0) {
+                    if(currentFile->data->lastAllocFailed == 1 /*&& strcmp(currentFile->data->lastAllocFailedName, name) == 0*/) {
                         printf("DEADLOCK DETECTED\n");
                         return 0;
                     }
                     currentFile->data->lastAllocFailed = 1;
-                    strcpy(currentFile->data->lastAllocFailedName, name);
+                    //strcpy(currentFile->data->lastAllocFailedName, name);
                     break;
                 } else {
                     currentFile->data->lastAllocFailed = 0;
-                    strcpy(currentFile->data->lastAllocFailedName, name);
+                    //strcpy(currentFile->data->lastAllocFailedName, name);
                     instrsRun++;
                     currentFile->data->lastExecuted++;
                 }
