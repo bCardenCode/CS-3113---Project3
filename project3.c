@@ -478,8 +478,11 @@ void release(char* string) {
             }
 
         }
-        currentIndex += current->data->size;
+        if(released == 0) {
+            currentIndex += current->data->size;
         current = current->next;
+        }
+        
     }
 
     //Determines printed output
