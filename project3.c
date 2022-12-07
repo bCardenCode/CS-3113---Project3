@@ -502,8 +502,12 @@ int requestFirstFit(char* string, int size) {
     int currentIndex = 0;
     struct ListNode* current = head;
     for(int i = 0; i < listLength; i++) {
-        if(strcmp(current->data->string, memAvailable) == 0 && current->data->size >= size) {
-            addBefore(string, size, current);
+        if(strcmp(current->data->string, memAvailable) == 0 && current->data->size > size) {
+            if(current->data->size == size) {
+                strcpy(current->data->string, string);
+            } else {
+                addBefore(string, size, current);
+            }
             success = 1;
             break;
         }
