@@ -589,6 +589,7 @@ int main(int argc, char** argv) {
                     if(processes == 1) {
                         requestFirstFit(name, size);
                         printf("DEADLOCK DETECTED\n");
+                        return 0;
                     }
                     strcpy(currentFile->data->lastAllocFailedName, name);
                     currentFile->data->lastAllocFailedSize = size;
