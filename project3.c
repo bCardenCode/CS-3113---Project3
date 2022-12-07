@@ -349,19 +349,19 @@ void compactMemory() {
     for(int i = 0; i < listLength; i++) {
 
         //if current is head
-        if(current == head) {
+        if(current == head && strcmp(current->data->string, memAvailable) == 0) {
             if(strcmp(current->data->string, current->next->data->string) == 0) {
                 current->data->size += current->next->data->size;
                 removeNode(current->next);
             }
 
         //if current is tail    
-        } else if(current == tail) {
+        } else if(current == tail && strcmp(current->data->string, memAvailable) == strcmp(current->data->string, memAvailable) == 0) {
             if(strcmp(current->data->string, current->previous->data->string) == 0) {
                 current->previous->data->size += current->data->size;
                 removeTail();
             }
-        } else {
+        } else if(strcmp(current->data->string, memAvailable) == 0) {
 
             //if next and previous are equal to current
             if(strcmp(current->data->string, current->previous->data->string) == 0 && strcmp(current->data->string, current->next->data->string) == 0) {
@@ -485,7 +485,7 @@ void release(char* string) {
         }
         if(released == 0) {
             currentIndex += current->data->size;
-        current = current->next;
+            current = current->next;
         }
         
     }
@@ -493,7 +493,7 @@ void release(char* string) {
     //Determines printed output
     if(released) {
         printf("FREE %s %d %d\n", string, releasedLength, currentIndex);
-        //compactMemory();
+        compactMemory();
     } else {
         printf("FAIL RELEASE %s\n", string);
     }
@@ -564,7 +564,6 @@ int main(int argc, char** argv) {
             else if(strcmp(func, comment) == 0) {
                 //Skips current line
                 fscanf(currentFile->data->filePtr, "%*[^\n]\n");
-                //currentFile->data->lastExecuted++;
 
             //Find
             } else if(strcmp(func, find_) == 0) {
