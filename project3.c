@@ -29,7 +29,6 @@ char* fileNames[8] = {"0.ins", "1.ins", "2.ins", "3.ins", "4.ins", "5.ins", "6.i
 // Structs
 //-----------------------------
 struct scriptFile {
-    //int lastExecuted;
     int completed;
     FILE* filePtr;
     int lastAllocFailed;
@@ -39,14 +38,10 @@ struct scriptFile {
 
 struct scriptFile* scriptFile_new(char* fileName) {
     struct scriptFile* ptr = malloc(sizeof (struct scriptFile));
-    //ptr->lastExecuted = 0;
     ptr->completed = 0;
     ptr->filePtr = fopen(fileName, "r");
     ptr->lastAllocFailed = 0;
-    //printf("Got here\n");
-    //strcpy(ptr->lastAllocFailedName, memAvailable);
     ptr->lastAllocFailedName = memAvailable;
-    //printf("Got here2\n");
     ptr->lastAllocFailedSize = 0;
     return ptr;
 }
@@ -112,7 +107,6 @@ void removeFile(struct FileNode* toRemove) {
     } else {
         toRemove->previous->next = toRemove->next;
         toRemove->next->previous = toRemove->previous;
-        //free(toRemove);
     }
     incompleteFiles--;
 }
@@ -139,7 +133,6 @@ struct ListNode* ListNode_new(struct Chunk* data) {
 
 void removeHead() {
     head->next->previous = NULL;
-    //free(head);
     head = head->next;
     listLength--;
 }
@@ -158,7 +151,6 @@ void removeNode(struct ListNode* this) {
     } else {
         this->previous->next = this->next;
         this->next->previous = this->previous;
-        //free(this);
         listLength--;
     }
 }
@@ -326,6 +318,9 @@ int listAssigned() {
         current = current->next;
     }
     printf("\n");
+    if(!ret) {
+        printf("NONE\n");
+    }
     return ret;
 }
 
@@ -486,19 +481,16 @@ void release(char* string) {
                     break;
                 }
             }
-
         }
         if(released == 0) {
             currentIndex += current->data->size;
             current = current->next;
         }
-        
     }
 
     //Determines printed output
     if(released) {
         printf("FREE %s %d %d\n", string, releasedLength, currentIndex);
-        //compactMemory();
     } else {
         printf("FAIL RELEASE %s\n", string);
     }
@@ -583,7 +575,7 @@ int main(int argc, char** argv) {
 
                 //If can't allocate...
                 if(requestFirstFit(name, size) == 0) {
-                    currentFile->data->lastAllocFailedName = name;
+                    currentFile->data->lastAllocFailedName = "A";
                     //strcpy(currentFile->data->lastAllocFailedName, name);
                     currentFile->data->lastAllocFailedSize = size;
 
@@ -622,15 +614,12 @@ int main(int argc, char** argv) {
                 if(strcmp(name, "AVAILABLE") == 0 ) {
                     listAvailable(); 
                 } else if(strcmp(name, "ASSIGNED") == 0) {
-                    if(!listAssigned()) {
-                        printf("NONE\n");
-                    }
+                    listAssigned();
                 }
                 instrsRun++;
             }
         }
         currentFile = currentFile->next;
     }
-
     return 0;
 }
