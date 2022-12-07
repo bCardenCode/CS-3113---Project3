@@ -553,7 +553,6 @@ int main(int argc, char** argv) {
         int instrsRun = 0;
         while(instrsRun < quantum) {
             
-            /*
             printf("here1\n");
             if(currentFile->data->lastAllocFailed == 1) {
                 printf("here2\n");
@@ -567,7 +566,6 @@ int main(int argc, char** argv) {
                     //currentFile->data->lastExecuted++;
                 }
             } 
-            */
 
             /*
             //Gets back to last executed line
