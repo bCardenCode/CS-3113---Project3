@@ -590,7 +590,7 @@ int main(int argc, char** argv) {
                         requestFirstFit(name, size);
                         printf("DEADLOCK DETECTED\n");
                     }
-                    currentFile->data->lastAllocFailedName = name;
+                    strcpy(currentFile->data->lastAllocFailedName, name);
                     currentFile->data->lastAllocFailedSize = size;
 
                     //Deadlock
