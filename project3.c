@@ -560,6 +560,7 @@ int main(int argc, char** argv) {
             }
 
             if(fscanf(currentFile->data->filePtr, "%s", func) == EOF) {
+                printf("here");
                 currentFile->data->completed = 1;
                 removeFile(currentFile);
                 instrsRun++;
