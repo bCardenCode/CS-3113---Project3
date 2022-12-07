@@ -547,12 +547,10 @@ int main(int argc, char** argv) {
         int instrsRun = 0;
         while(instrsRun < quantum) {
 
-            /*
             //Gets back to last executed line
             for(int i = 0; i < currentFile->data->lastExecuted; i++) {
                 fscanf(currentFile->data->filePtr, "%*[^\n]\n");
             }
-            */
 
             if(fscanf(currentFile->data->filePtr, "%s", func) == EOF) {
                 //printf("here");
@@ -566,7 +564,7 @@ int main(int argc, char** argv) {
             else if(strcmp(func, comment) == 0) {
                 //Skips current line
                 fscanf(currentFile->data->filePtr, "%*[^\n]\n");
-                //currentFile->data->lastExecuted++;
+                currentFile->data->lastExecuted++;
 
             //Find
             } else if(strcmp(func, find_) == 0) {
