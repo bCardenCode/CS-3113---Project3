@@ -186,6 +186,9 @@ void addBefore(char* string, int size, struct ListNode* addedBefore) {
         node->previous->next = node;
         addedBefore->previous = node;
         addedBefore->data->size -= size;
+        if(addedBefore->data->size == 0) {
+            removeNode(addedBefore);
+        }
         listLength++;
     }
 }
@@ -497,7 +500,6 @@ void release(char* string) {
 int requestFirstFit(char* string, int size) {
     int success = 0;
     int currentIndex = 0;
-
     struct ListNode* current = head;
     for(int i = 0; i < listLength; i++) {
         if(strcmp(current->data->string, memAvailable) == 0 && current->data->size >= size) {
@@ -524,7 +526,7 @@ int requestFirstFit(char* string, int size) {
 int main(int argc, char** argv) {
 
     readInput(argc, argv);
-    initializeList(space);
+    initializeList(512);
     assignFilePtrs();
 
     //printMemory();
@@ -532,6 +534,13 @@ int main(int argc, char** argv) {
     char func[100];
     char name[100];
     int size;
+
+    /*
+    requestFirstFit("OS", 256);
+    requestFirstFit("B", 64);
+    requestFirstFit("C", 192);
+    listAvailable();
+    */
 
     struct FileNode* currentFile = fileHead;
     //struct FileNode* currentFile = FileNode_new(scriptFile_new("sandbox.txt"));
