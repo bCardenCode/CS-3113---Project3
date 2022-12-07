@@ -43,7 +43,7 @@ struct scriptFile* scriptFile_new(char* fileName) {
     ptr->completed = 0;
     ptr->filePtr = fopen(fileName, "r");
     ptr->lastAllocFailed = 0;
-    ptr->lastAllocFailedName = memAvailable;
+    strcpy(ptr->lastAllocFailedName, memAvailable);
     ptr->lastAllocFailedSize = 0;
     return ptr;
 }
@@ -553,8 +553,8 @@ int main(int argc, char** argv) {
                     printf("DEADLOCK DETECTED\n");
                     return 0;
                 } else {
-                    //instrsRun++;
-                    //currentFile->data->lastExecuted++;
+                    instrsRun++;
+                    currentFile->data->lastExecuted++;
                 }
             }
 
