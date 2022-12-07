@@ -547,7 +547,7 @@ int main(int argc, char** argv) {
     requestFirstFit("C", 192);
     listAvailable();
     */
-
+   
     struct FileNode* currentFile = fileHead;
     //struct FileNode* currentFile = FileNode_new(scriptFile_new("sandbox.txt"));
     while(incompleteFiles > 0){
@@ -583,12 +583,13 @@ int main(int argc, char** argv) {
             //Request
             } else if(strcmp(func, request) == 0) {
                 fscanf(currentFile->data->filePtr, "%s %d", name, &size);
-                //printf("%d ", currentFile->data->lastExecuted);
 
                 //If can't allocate...
                 if(requestFirstFit(name, size) == 0) {
-                    //printf("%s here", name);
-                    //currentFile->data->lastExecuted--;
+                    if(processes == 1) {
+                        requestFirstFit(name, size);
+                        printf("DEADLOCK DETECTED\n");
+                    }
 
                     //Deadlock
                     if(currentFile->data->lastAllocFailed == 1) {
@@ -602,7 +603,6 @@ int main(int argc, char** argv) {
                     instrsRun++;
                     currentFile->data->lastExecuted++;
                 }
-                //printf(" %d", currentFile->data->lastExecuted);
 
             //Release
             } else if(strcmp(func, release_) == 0) {
