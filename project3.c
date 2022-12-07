@@ -537,6 +537,10 @@ int main(int argc, char** argv) {
 
             //Gets back to last executed line
             for(int i = 0; i < currentFile->data->lastExecuted; i++) {
+                fscanf(currentFile->data->filePtr, "%s", func);
+                if(func == comment) {
+                    i--;
+                }
                 fscanf(currentFile->data->filePtr, "%*[^\n]\n");
             }
 
