@@ -582,7 +582,7 @@ int main(int argc, char** argv) {
             //Request
             } else if(strcmp(func, request) == 0) {
                 fscanf(currentFile->data->filePtr, "%s %d", name, &size);
-                printf("%d ", instrsRun);
+                printf("%d ", currentFile->data->lastExecuted);
 
                 //If can't allocate...
                 if(requestFirstFit(name, size) == 0) {
