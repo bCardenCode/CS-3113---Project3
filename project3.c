@@ -526,7 +526,7 @@ int requestFirstFit(char* string, int size) {
 int main(int argc, char** argv) {
 
     readInput(argc, argv);
-    initializeList(512);
+    initializeList(space);
     assignFilePtrs();
 
     //printMemory();
