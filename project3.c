@@ -186,9 +186,9 @@ void addBefore(char* string, int size, struct ListNode* addedBefore) {
         node->previous->next = node;
         addedBefore->previous = node;
         addedBefore->data->size -= size;
-        if(addedBefore->data->size == 0) {
-            removeNode(addedBefore);
-        }
+        //if(addedBefore->data->size == 0) {
+        //    removeNode(addedBefore);
+        //}
         listLength++;
     }
 }
@@ -588,6 +588,7 @@ int main(int argc, char** argv) {
                     currentFile->data->lastAllocFailed = 1;
                     break;
                 } else {
+                    currentFile->data->lastAllocFailed = 0;
                     instrsRun++;
                     currentFile->data->lastExecuted++;
                 }
