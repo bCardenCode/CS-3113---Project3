@@ -532,7 +532,7 @@ int requestFirstFit(char* string, int size) {
 int main(int argc, char** argv) {
 
     readInput(argc, argv);
-    initializeList(space);
+    initializeList(6);
     assignFilePtrs();
 
     //printMemory();
@@ -541,23 +541,18 @@ int main(int argc, char** argv) {
     char name[100];
     int size;
 
-    /*
-    requestFirstFit("OS", 256);
-    requestFirstFit("B", 64);
-    requestFirstFit("C", 192);
-    listAvailable();
-    */
-
     struct FileNode* currentFile = fileHead;
     //struct FileNode* currentFile = FileNode_new(scriptFile_new("sandbox.txt"));
     while(incompleteFiles > 0){
         int instrsRun = 0;
         while(instrsRun < quantum) {
 
+            /*
             //Gets back to last executed line
             for(int i = 0; i < currentFile->data->lastExecuted; i++) {
                 fscanf(currentFile->data->filePtr, "%*[^\n]\n");
             }
+            */
 
             if(fscanf(currentFile->data->filePtr, "%s", func) == EOF) {
                 //printf("here");
