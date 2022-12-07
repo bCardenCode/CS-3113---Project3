@@ -43,7 +43,10 @@ struct scriptFile* scriptFile_new(char* fileName) {
     ptr->completed = 0;
     ptr->filePtr = fopen(fileName, "r");
     ptr->lastAllocFailed = 0;
-    strcpy(ptr->lastAllocFailedName, memAvailable);
+    //printf("Got here\n");
+    //strcpy(ptr->lastAllocFailedName, memAvailable);
+    ptr->lastAllocFailedName = memAvailable;
+    //printf("Got here2\n");
     ptr->lastAllocFailedSize = 0;
     return ptr;
 }
@@ -543,12 +546,13 @@ int main(int argc, char** argv) {
     char name[100];
     int size;
 
+    
     struct FileNode* currentFile = fileHead;
     //struct FileNode* currentFile = FileNode_new(scriptFile_new("sandbox.txt"));
     while(incompleteFiles > 0) {
         int instrsRun = 0;
         while(instrsRun < quantum) {
-            /*
+    
             printf("here1\n");
             if(currentFile->data->lastAllocFailed == 1) {
                 printf("here2\n");
@@ -562,8 +566,8 @@ int main(int argc, char** argv) {
                     //currentFile->data->lastExecuted++;
                 }
             } 
-        */
-           /*
+
+            /*
             //Gets back to last executed line
             for(int i = 0; i < currentFile->data->lastExecuted; i++) {
                 fscanf(currentFile->data->filePtr, "%*[^\n]\n");
@@ -608,13 +612,13 @@ int main(int argc, char** argv) {
                         return 0;
                     }
                     currentFile->data->lastAllocFailed = 1;
-                    //strcpy(currentFile->data->lastAllocFailedName, name);
-                    //currentFile->data->lastAllocFailedSize = size;
+                    strcpy(currentFile->data->lastAllocFailedName, name);
+                    currentFile->data->lastAllocFailedSize = size;
                     break;
                 } else {
                     currentFile->data->lastAllocFailed = 0;
-                    //strcpy(currentFile->data->lastAllocFailedName, memAvailable);
-                    //currentFile->data->lastAllocFailedSize = 0;
+                    strcpy(currentFile->data->lastAllocFailedName, memAvailable);
+                    currentFile->data->lastAllocFailedSize = 0;
                     instrsRun++;
                     //currentFile->data->lastExecuted++;
                 }
