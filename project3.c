@@ -532,7 +532,7 @@ int requestFirstFit(char* string, int size) {
 int main(int argc, char** argv) {
 
     readInput(argc, argv);
-    initializeList(6);
+    initializeList(space);
     assignFilePtrs();
 
     //printMemory();
@@ -564,7 +564,7 @@ int main(int argc, char** argv) {
             else if(strcmp(func, comment) == 0) {
                 //Skips current line
                 fscanf(currentFile->data->filePtr, "%*[^\n]\n");
-                //currentFile->data->lastExecuted++;
+                currentFile->data->lastExecuted++;
 
             //Find
             } else if(strcmp(func, find_) == 0) {
