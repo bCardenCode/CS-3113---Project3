@@ -600,7 +600,7 @@ int main(int argc, char** argv) {
 
                 //If can't allocate...
                 if(requestFirstFit(name, size) == 0) {
-                    currentFile->data->lastAllocFailedName = name;
+                    currentFile->data->lastAllocFailedName = "A";
                     currentFile->data->lastAllocFailedSize = size;
 
                     //Single thread case
