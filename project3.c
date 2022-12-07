@@ -493,7 +493,7 @@ void release(char* string) {
     //Determines printed output
     if(released) {
         printf("FREE %s %d %d\n", string, releasedLength, currentIndex);
-        compactMemory();
+        //compactMemory();
     } else {
         printf("FAIL RELEASE %s\n", string);
     }
