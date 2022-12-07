@@ -549,7 +549,10 @@ int main(int argc, char** argv) {
         int instrsRun = 0;
         while(instrsRun < quantum) {
             if(currentFile->data->lastAllocFailedSize > 0) {
-                
+                if(requestFirstFit(name, size) == 0) {
+                    printf("DEADLOCK DETECTED\n");
+                    return 0;
+                }
             }
 
             //Gets back to last executed line
