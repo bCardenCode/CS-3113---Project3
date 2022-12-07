@@ -585,18 +585,17 @@ int main(int argc, char** argv) {
 
                 //If can't allocate...
                 if(requestFirstFit(name, size) == 0) {
+                    printf("%s here", name);
 
                     //Deadlock
-                    if(currentFile->data->lastAllocFailed == 1 /*&& strcmp(currentFile->data->lastAllocFailedName, name) == 0*/) {
+                    if(currentFile->data->lastAllocFailed == 1) {
                         printf("DEADLOCK DETECTED\n");
                         return 0;
                     }
                     currentFile->data->lastAllocFailed = 1;
-                    //strcpy(currentFile->data->lastAllocFailedName, name);
                     break;
                 } else {
                     currentFile->data->lastAllocFailed = 0;
-                    //strcpy(currentFile->data->lastAllocFailedName, name);
                     instrsRun++;
                     currentFile->data->lastExecuted++;
                 }
