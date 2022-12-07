@@ -290,11 +290,9 @@ int listAvailable() {
         current = current->next;
     }
     if(ret == 0) {
-        printf("FULL\n");
+        printf("FULL");
     }
-    if(!firstPrint) {
-        printf("\n");
-    }
+    printf("\n");
     return ret;
 }
 
@@ -317,6 +315,7 @@ int listAssigned() {
         currentIndex += current->data->size;
         current = current->next;
     }
+    printf("\n");
     return ret;
 }
 
