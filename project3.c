@@ -548,7 +548,7 @@ int main(int argc, char** argv) {
     while(incompleteFiles > 0){
         int instrsRun = 0;
         while(instrsRun < quantum) {
-            if(currentFile->data->lastAllocFailedSize == 1) {
+            if(currentFile->data->lastAllocFailed == 1) {
                 if(requestFirstFit(name, size) == 0) {
                     printf("DEADLOCK DETECTED\n");
                     return 0;
