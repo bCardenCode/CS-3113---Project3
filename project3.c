@@ -553,8 +553,8 @@ int main(int argc, char** argv) {
                     printf("DEADLOCK DETECTED\n");
                     return 0;
                 } else {
-                    instrsRun++;
-                    currentFile->data->lastExecuted++;
+                    //instrsRun++;
+                    //currentFile->data->lastExecuted++;
                 }
             }
 
