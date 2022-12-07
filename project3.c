@@ -540,42 +540,25 @@ int main(int argc, char** argv) {
     initializeList(space);
     assignFilePtrs();
 
-    //printMemory();
-
-    char func[100];
-    char name[100];
+    char* func/*[100]*/;
+    char* name/*[100]*/;
     int size;
-
     
     struct FileNode* currentFile = fileHead;
-    //struct FileNode* currentFile = FileNode_new(scriptFile_new("sandbox.txt"));
     while(incompleteFiles > 0) {
         int instrsRun = 0;
         while(instrsRun < quantum) {
             
-            //printf("here1\n");
             if(currentFile->data->lastAllocFailed == 1) {
-                //printf("here2\n");
                 if(requestFirstFit(currentFile->data->lastAllocFailedName, currentFile->data->lastAllocFailedSize) == 0) {
-                    //printf("here3\n");
                     printf("DEADLOCK DETECTED\n");
                     return 0;
                 } else {
-                    //printf("here4\n");
                     instrsRun++;
-                    //currentFile->data->lastExecuted++;
                 }
             } 
 
-            /*
-            //Gets back to last executed line
-            for(int i = 0; i < currentFile->data->lastExecuted; i++) {
-                fscanf(currentFile->data->filePtr, "%*[^\n]\n");
-            }
-            */
-
             if(fscanf(currentFile->data->filePtr, "%s", func) == EOF) {
-                //printf("here");
                 currentFile->data->completed = 1;
                 removeFile(currentFile);
                 instrsRun++;
@@ -584,6 +567,7 @@ int main(int argc, char** argv) {
                  
             //Comment
             else if(strcmp(func, comment) == 0) {
+
                 //Skips current line
                 fscanf(currentFile->data->filePtr, "%*[^\n]\n");
 
@@ -592,7 +576,6 @@ int main(int argc, char** argv) {
                 fscanf(currentFile->data->filePtr, "%s", name);
                 find(name);
                 instrsRun++;
-                //currentFile->data->lastExecuted++;
 
             //Request
             } else if(strcmp(func, request) == 0) {
@@ -600,7 +583,8 @@ int main(int argc, char** argv) {
 
                 //If can't allocate...
                 if(requestFirstFit(name, size) == 0) {
-                    currentFile->data->lastAllocFailedName = "A";
+                    //currentFile->data->lastAllocFailedName = "A";
+                    strcpy(currentFile->data->lastAllocFailedName, name);
                     currentFile->data->lastAllocFailedSize = size;
 
                     //Single thread case
@@ -617,18 +601,13 @@ int main(int argc, char** argv) {
                     }
                      currentFile->data->lastAllocFailed = 1;
                     
-                    //strcpy(currentFile->data->lastAllocFailedName, name);
-                    //char* temp = currentFile->data->lastAllocFailedName;
-                    //free(temp);
-                    
                     break;
                 } else {
                     currentFile->data->lastAllocFailed = 0;
-                    //strcpy(currentFile->data->lastAllocFailedName, memAvailable);
-                    currentFile->data->lastAllocFailedName = memAvailable;
+                    //currentFile->data->lastAllocFailedName = memAvailable;
+                    strcpy(currentFile->data->lastAllocFailedName, memAvailable);
                     currentFile->data->lastAllocFailedSize = 0;
                     instrsRun++;
-                    //currentFile->data->lastExecuted++;
                 }
 
             //Release
@@ -636,7 +615,6 @@ int main(int argc, char** argv) {
                 fscanf(currentFile->data->filePtr, "%s", name);
                 release(name);
                 instrsRun++;
-                //currentFile->data->lastExecuted++;
 
             //List
             } else if(strcmp(func, list) == 0) {
@@ -649,9 +627,7 @@ int main(int argc, char** argv) {
                     }
                 }
                 instrsRun++;
-                //currentFile->data->lastExecuted++;
             }
-
         }
         currentFile = currentFile->next;
     }
