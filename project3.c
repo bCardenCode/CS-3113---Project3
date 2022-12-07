@@ -186,9 +186,9 @@ void addBefore(char* string, int size, struct ListNode* addedBefore) {
         node->previous->next = node;
         addedBefore->previous = node;
         addedBefore->data->size -= size;
-        //if(addedBefore->data->size == 0) {
-        //    removeNode(addedBefore);
-        //}
+        if(addedBefore->data->size == 0) {
+            removeNode(addedBefore);
+        }
         listLength++;
     }
 }
