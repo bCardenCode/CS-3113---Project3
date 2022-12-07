@@ -540,8 +540,8 @@ int main(int argc, char** argv) {
     initializeList(space);
     assignFilePtrs();
 
-    char* func/*[100]*/;
-    char* name/*[100]*/;
+    char func[10];
+    char name[10];
     int size;
     
     struct FileNode* currentFile = fileHead;
@@ -583,8 +583,8 @@ int main(int argc, char** argv) {
 
                 //If can't allocate...
                 if(requestFirstFit(name, size) == 0) {
-                    //currentFile->data->lastAllocFailedName = "A";
-                    strcpy(currentFile->data->lastAllocFailedName, name);
+                    currentFile->data->lastAllocFailedName = "A";
+                    //strcpy(currentFile->data->lastAllocFailedName, name);
                     currentFile->data->lastAllocFailedSize = size;
 
                     //Single thread case
@@ -604,8 +604,8 @@ int main(int argc, char** argv) {
                     break;
                 } else {
                     currentFile->data->lastAllocFailed = 0;
-                    //currentFile->data->lastAllocFailedName = memAvailable;
-                    strcpy(currentFile->data->lastAllocFailedName, memAvailable);
+                    currentFile->data->lastAllocFailedName = memAvailable;
+                    //strcpy(currentFile->data->lastAllocFailedName, memAvailable);
                     currentFile->data->lastAllocFailedSize = 0;
                     instrsRun++;
                 }
