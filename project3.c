@@ -548,7 +548,7 @@ int main(int argc, char** argv) {
     while(incompleteFiles > 0) {
         int instrsRun = 0;
         while(instrsRun < quantum) {
-
+            /*
             printf("here1\n");
             if(currentFile->data->lastAllocFailed == 1) {
                 printf("here2\n");
@@ -562,7 +562,7 @@ int main(int argc, char** argv) {
                     //currentFile->data->lastExecuted++;
                 }
             } 
-
+        */
            /*
             //Gets back to last executed line
             for(int i = 0; i < currentFile->data->lastExecuted; i++) {
