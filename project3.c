@@ -33,8 +33,8 @@ struct scriptFile {
     int completed;
     FILE* filePtr;
     int lastAllocFailed;
-    //char* lastAllocFailedName;
-    //int lastAllocFailedSize;
+    char* lastAllocFailedName;
+    int lastAllocFailedSize;
 };
 
 struct scriptFile* scriptFile_new(char* fileName) {
@@ -43,8 +43,8 @@ struct scriptFile* scriptFile_new(char* fileName) {
     ptr->completed = 0;
     ptr->filePtr = fopen(fileName, "r");
     ptr->lastAllocFailed = 0;
-    //strcpy(ptr->lastAllocFailedName, memAvailable);
-    //ptr->lastAllocFailedSize = 0;
+    strcpy(ptr->lastAllocFailedName, memAvailable);
+    ptr->lastAllocFailedSize = 0;
     return ptr;
 }
 
@@ -608,13 +608,13 @@ int main(int argc, char** argv) {
                         return 0;
                     }
                     currentFile->data->lastAllocFailed = 1;
-                    //strcpy(currentFile->data->lastAllocFailedName, name);
-                    //currentFile->data->lastAllocFailedSize = size;
+                    strcpy(currentFile->data->lastAllocFailedName, name);
+                    currentFile->data->lastAllocFailedSize = size;
                     break;
                 } else {
                     currentFile->data->lastAllocFailed = 0;
-                    //strcpy(currentFile->data->lastAllocFailedName, memAvailable);
-                    //currentFile->data->lastAllocFailedSize = 0;
+                    strcpy(currentFile->data->lastAllocFailedName, memAvailable);
+                    currentFile->data->lastAllocFailedSize = 0;
                     instrsRun++;
                     //currentFile->data->lastExecuted++;
                 }
