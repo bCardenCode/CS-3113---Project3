@@ -132,7 +132,7 @@ struct ListNode* ListNode_new(struct Chunk* data) {
 
 void removeHead() {
     head->next->previous = NULL;
-    free(head);
+    //free(head);
     head = head->next;
     listLength--;
 }
