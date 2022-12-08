@@ -170,7 +170,7 @@ void addEnd(struct ListNode* toAdd) {
     listLength++;
 }
 
-void addBefore(char* string, int size, struct ListNode* addedBefore) {
+struct ListNode* addBefore(char* string, int size, struct ListNode* addedBefore) {
     struct Chunk* chunk = Chunk_new(string, size);
     struct ListNode* node = ListNode_new(chunk);
 
@@ -188,8 +188,10 @@ void addBefore(char* string, int size, struct ListNode* addedBefore) {
         if(addedBefore->data->size == 0) {
             removeNode(addedBefore);
         }
+        addedBefore = node;
         listLength++;
     }
+    return node;
 }
 
 void initializeList(int size) {
@@ -473,19 +475,109 @@ int requestFirstFit(char* string, int size) {
     return success;
 }
 
+void compactMemory() {
+
+    //Edge case
+    if(listLength < 2) {
+        return;
+    }
+
+    struct ListNode* current = head;
+    for(int i = 0; i < listLength; i++) {
+
+        //if current is head
+        if(current == head && strcmp(current->data->string, memAvailable) == 0) {
+            if(strcmp(current->data->string, current->next->data->string) == 0) {
+                current->data->size += current->next->data->size;
+                removeNode(current->next);
+            }
+
+        //if current is tail    
+        } else if(current == tail && strcmp(current->data->string, memAvailable) == strcmp(current->data->string, memAvailable) == 0) {
+            if(strcmp(current->data->string, current->previous->data->string) == 0) {
+                current->previous->data->size += current->data->size;
+                removeTail();
+            }
+        } else if(strcmp(current->data->string, memAvailable) == 0) {
+
+            //if next and previous are equal to current
+            if(strcmp(memAvailable, current->previous->data->string) == 0 && strcmp(memAvailable, current->next->data->string) == 0) {
+                current->previous->data->size += (current->data->size + current->next->data->size);
+                struct ListNode* temp = current;
+                current = current->previous;
+                removeNode(temp->next);
+                removeNode(temp);
+
+            //if ONLY previous and current are the same    
+            } else if(strcmp(memAvailable, current->previous->data->string) == 0) {
+                current->previous->data->size += current->data->size;
+                struct ListNode* temp = current;
+                current = current->previous;
+                removeNode(temp);
+
+            //if ONLY current and next are the same    
+            } else if(strcmp(memAvailable, current->next->data->string) == 0) {
+                current->data->size += current->next->data->size;
+                removeNode(current->next);
+            }
+        }
+        current = current->next;
+    }
+}
+
+void splitMemory(char* string, int size, struct ListNode* memory) {
+
+    //If open memory equals size
+    if(memory->data->size == size) {
+        strcpy(memory->data->string, string);
+
+    //if open memory is not double size     
+    } else if (memory->data->size < 2 * size) {
+        addBefore(string, size, memory);
+
+    //if memory can be split    
+    } else {
+        if(memory->data->size >= 2 * size) {
+            memory = addBefore(memAvailable, memory->data->size / 2, memory);
+            splitMemory(string, size, memory);
+        } 
+    }
+}
+
+int requestBuddySystem(char* string, int size) {
+    int success = 0;
+    int currentIndex = 0;
+    struct ListNode* current = head;
+
+    int roundedSize = 2;
+    while(size > roundedSize) {
+        roundedSize *= 2;
+    }
+
+    for(int i = 0; i < listLength; i++) {
+        if(strcmp(current->data->string, memAvailable) == 0 && current->data->size >= roundedSize) {
+            splitMemory(string, roundedSize, current);
+            break;
+        }
+        current = current->next;
+    }
+
+    return 0;
+}
+
 //-----------------------------
 // Main Method
 //-----------------------------
 int main(int argc, char** argv) {
 
     readInput(argc, argv);
-    initializeList(space);
+    initializeList(128);
     assignFilePtrs();
 
     char func[10];
     char name[10];
     int size;
-    
+
     struct FileNode* currentFile = fileHead;
     while(incompleteFiles > 0) {
         int instrsRun = 0;
@@ -527,11 +619,7 @@ int main(int argc, char** argv) {
 
                 //If can't allocate...
                 if(requestFirstFit(name, size) == 0) {
-                    //currentFile->data->lastAllocFailedName = "A";
-                    char* temp = currentFile->data->lastAllocFailedName;
-                    free(temp);
-                    currentFile->data->lastAllocFailedName = name;
-                    //strcpy(currentFile->data->lastAllocFailedName, name);
+                    currentFile->data->lastAllocFailedName = "A";
                     currentFile->data->lastAllocFailedSize = size;
 
                     //Single thread deadlock case
@@ -546,7 +634,6 @@ int main(int argc, char** argv) {
                 } else {
                     currentFile->data->lastAllocFailed = 0;
                     currentFile->data->lastAllocFailedName = memAvailable;
-                    //strcpy(currentFile->data->lastAllocFailedName, memAvailable);
                     currentFile->data->lastAllocFailedSize = 0;
                     instrsRun++;
                 }
@@ -570,5 +657,6 @@ int main(int argc, char** argv) {
         }
         currentFile = currentFile->next;
     }
+
     return 0;
 }
