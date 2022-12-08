@@ -14,7 +14,20 @@
 - the values for `p` will be from  1-8
 - the value for `ALGO` will be "FIRSTFIT", implementation for BuddyFit is not complete
 
-##
+## Structs
+`scriptFile`
+- Used to store data about a script file
+- Contains data such as the file pointer, whether or not the file is completed, and whether or not the last allocate command failed
+
+`Chunk`
+- This represents a chunk of memory.
+- Contains a name for what occupies the chunk of memory and the size it occupies
+
+`fileNode`
+- Circular Linked List used to store script files
+
+`listNode`
+- Doubly Linked List used to store memory
 
 ## Functions
 `void assignFilePtrs()`
@@ -70,5 +83,9 @@
 - `listAvailable`, `listAssigned`, `find`, `release`, and `requestFirstFit` all behave as described in project description
 
 - `compactMemory`, `requestBuddySystem`, `splitMemory` is the unfinished implementation of BUDDY algorithm
+---------
 
 ## Choosing the Quantum
+Choice of quantum is important as it affects the user's perception of a computer's multitasking ability. If the quantum is large, meaning many instructions of one script are executed before changing to a different script, the user may see these programs performing in a choppy manner. Each program being rotated through the CPU scheduler will perform well for a brief second before stopping while other programs run.
+
+If the quantum is a smaller value, the user will see each program running more consistently and smoothly. No program is able to take much time from another as each are being executed for a very brief amount of time.
